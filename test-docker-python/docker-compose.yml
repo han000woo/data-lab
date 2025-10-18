@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # 1. 파이썬 앱 서비스
+  app:
+    build: ./python_app  # ./python_app 폴더의 Dockerfile을 사용해 빌드
+    
+    # DB 접속 정보를 환경 변수로 파이썬 스크립트에 전달
+    environment:
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_HOST=db        # ★★★ 핵심: 'db' 서비스의 호스트 이름
+      - DB_NAME=mydatabase
+      - DB_PORT=5432
+    
+    # 'db' 서비스가 시작된 *후에* 'app' 서비스를 시작
+    # (주의: 시작 순서만 보장, DB가 준비된 것을 보장하진 않음 -> main.py의 대기 로직이 필요)
+    depends_on:
+      - db
+
+  # 2. PostgreSQL DB 서비스
+  db:
+    image: postgres:15-alpine # 가벼운 PostgreSQL 이미지 사용
+    
+    # DB 컨테이너 초기 설정을 위한 환경 변수 (PostgreSQL 공식 이미지 규칙)
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydatabase
+    
+    # 포트 매핑: <Host PC 포트>:<컨테이너 포트>
+    # (선택 사항: 내 PC에서 DB 툴로 접속해 보려면 주석 해제)
+    # ports:
+    #   - "15432:5432"
+    
+    # 볼륨: DB 데이터를 내 PC(Host)에 저장하여 컨테이너가 삭제돼도 데이터 보존
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+        # 3. (신규) FastAPI API 서비스
+  api:
+    build: ./api_app  # ./api_app 폴더의 Dockerfile 사용
+
+    # 내 PC의 8000번 포트와 컨테이너의 8000번 포트 연결
+    ports:
+      - "8000:8000"
+
+    # 'app'과 동일한 DB 접속 정보 전달
+    environment:
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_NAME=mydatabase
+      - DB_PORT=5432
+
+    # 'db' 서비스가 시작된 후에 실행
+    depends_on:
+      - db
+
+        # 4. (신규) Nginx 웹 서버 (프론트엔드)
+  web:
+    build: ./web_app  # ./web_app 폴더의 Dockerfile 사용
+    ports:
+      - "8080:80"   # Host의 8080포트를 Nginx 컨테이너의 80포트와 연결
+    depends_on:
+      - api         # API 서버가 뜬 '후에' 웹 서버가 켜지도록 설정
+    
+# Docker가 관리하는 볼륨 선언
+volumes:
+  postgres-data:

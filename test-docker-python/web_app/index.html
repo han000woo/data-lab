@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도커 데이터 파이프라인</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; background-color: #f4f4f9; }
+        h1 { color: #333; }
+        #loading { font-style: italic; color: #777; }
+        #post-list { list-style: none; padding: 0; }
+        #post-list li { 
+            background-color: #fff; 
+            border: 1px solid #ddd; 
+            margin-bottom: 10px; 
+            padding: 15px; 
+            border-radius: 5px;
+        }
+        #post-list li strong { color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 FastAPI에서 가져온 데이터</h1>
+
+    <p id="loading">데이터 로딩 중...</p>
+
+    <ul id="post-list">
+        </ul>
+
+    <script>
+        // 이 스크립트는 사용자의 '웹 브라우저'에서 실행됩니다.
+        document.addEventListener('DOMContentLoaded', () => {
+            const listElement = document.getElementById('post-list');
+            const loadingElement = document.getElementById('loading');
+
+            // 브라우저가 localhost의 8000번 포트(FastAPI 서버)에 데이터를 요청합니다.
+            fetch('http://121.162.95.145:8000/posts')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('API 서버에서 데이터를 가져오는 데 실패했습니다.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingElement.style.display = 'none'; // '로딩 중...' 메시지 숨기기
+
+                    // 받은 데이터(배열)를 순회하며 <li> 태그로 만듭니다.
+                    data.forEach(post => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>Post ID: ${post.post_id}</strong> (User ID: ${post.userId})<br>${post.title}`;
+                        listElement.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch 에러:', error);
+                    loadingElement.textContent = `❌ 데이터 로드 실패! API 서버(api)가 실행 중인지 확인하세요. (오류: ${error.message})`;
+                    loadingElement.style.color = 'red';
+                });
+        });
+    </script>
+
+</body>
+</html>
+

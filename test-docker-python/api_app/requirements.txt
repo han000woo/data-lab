@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]  # ASGI 서버
+sqlalchemy
+psycopg2-binary    # PostgreSQL 드라이버
+pandas             # DB에서 읽은 데이터를 JSON으로 변환하기 편함
