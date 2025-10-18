@@ -41,6 +41,7 @@
 
 ## 📁 프로젝트 구조
 
+```bash
 data-pipeline-docker/
 ├── docker-compose.yml     # 4개 서비스(app, db, api, web) 정의
 ├── README.md              # (프로젝트 설명 파일)
@@ -58,6 +59,7 @@ data-pipeline-docker/
 └── web_app/               # (Service: web) 프론트엔드 웹 서버
     ├── index.html         # JavaScript fetch()로 API 호출
     └── Dockerfile         # Nginx
+```
 
 ---
 
