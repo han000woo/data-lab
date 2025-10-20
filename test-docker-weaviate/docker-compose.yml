@@ -1,0 +1,39 @@
+services:
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.27.1
+    ports:
+      - "8080:8080" # REST
+      - "50051:50051" # gRPC
+    restart: on-failure:0
+    volumes:
+      - ./weaviate_data:/var/lib/weaviate
+    environment:
+      # 1. 벡터화 모듈 (이전과 동일)
+      DEFAULT_VECTORIZER_MODULE: 'text2vec-transformers'
+      TRANSFORMERS_INFERENCE_API: 'http://text2vec-transformers:8080'
+      
+      # 2. (신규) 생성형 AI 모듈 (Ollama)
+      GENERATIVE_OLLAMA_API_ENDPOINT: 'http://ollama:11434' # ollama 서비스 주소
+      
+      # 3. 모듈 활성화
+      ENABLE_MODULES: 'text2vec-transformers,generative-ollama' # 2개 모듈 활성화
+      
+      # (기타 설정)
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      CLUSTER_HOSTNAME: 'node1'
+
+  text2vec-transformers:
+    # 텍스트를 벡터로 변환하는 모델 (이전과 동일)
+    image: cr.weaviate.io/semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1
+    environment:
+      ENABLE_CUDA: '0'
+
+  ollama:
+    # (신규) 텍스트를 생성하는 LLM (Llama 3 8B)
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434" # (선택) 호스트에서 직접 Ollama에 접속할 경우
+    volumes:
+      - ./ollama_data:/root/.ollama
+

@@ -1,0 +1,4 @@
+weaviate-client
+fastapi
+uvicorn[standard]
+ollama

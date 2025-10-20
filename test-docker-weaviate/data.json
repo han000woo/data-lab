@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Weaviate 소개",
+    "content": "Weaviate는 AI 네이티브 벡터 데이터베이스입니다. 고차원 벡터를 저장하고 검색하는 데 특화되어 있으며, 모듈식 아키텍처를 통해 다양한 AI 모델과 통합됩니다.",
+    "category": "Technology"
+  },
+  {
+    "title": "Ollama란?",
+    "content": "Ollama는 Llama 3, Mistral 등 강력한 대규모 언어 모델(LLM)을 로컬 환경에서 쉽게 실행할 수 있게 해주는 도구입니다.",
+    "category": "Technology"
+  },
+  {
+    "title": "Docker의 개념",
+    "content": "Docker는 애플리케이션을 컨테이너라는 격리된 환경에서 패키징하고 실행하는 플랫폼입니다. 이를 통해 개발, 배포, 운영이 간소화됩니다.",
+    "category": "Technology"
+  },
+  {
+    "title": "인상주의 미술",
+    "content": "인상주의는 19세기 후반 프랑스에서 시작된 미술 사조로, 순간의 인상을 포착하려 했으며 빛과 색채의 변화를 중요시했습니다. 대표적인 화가로는 모네가 있습니다.",
+    "category": "Art"
+  },
+  {
+    "title": "광합성의 과정",
+    "content": "광합성은 식물이 빛 에너지를 사용하여 물과 이산화탄소를 포도당(에너지)과 산소로 변환하는 과정입니다. 엽록체에서 일어납니다.",
+    "category": "Science"
+  }
+]

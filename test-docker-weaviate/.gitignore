@@ -1,0 +1,5 @@
+# .gitignore
+
+ollama_data/
+weaviate_data/
+venv/
