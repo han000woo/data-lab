@@ -1,32 +1,25 @@
-name: Sync Fork
+name: Sync Fork (no push)
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' # 매시간 실행
   workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout fork repo
         uses: actions/checkout@v3
 
-      - name: Add upstream
+      - name: Add upstream (원본 연결)
         run: git remote add upstream https://github.com/han000woo/data-lab.git
 
-      - name: Fetch upstream and merge
-        run: |
-          git fetch upstream
-          git checkout main
-          git merge upstream/main --allow-unrelated-histories --strategy-option=ours
-          # workflow 파일 유지
-          git checkout HEAD .github/workflows/sync.yml
+      - name: Fetch upstream (원본 읽기)
+        run: git fetch upstream
 
-      - name: Push changes
-        env:
-          TOKEN: ${{ secrets.PAT_TOKEN }} # 포크 레포에 push하려면 여전히 필요
+      - name: Compare branches
         run: |
-          git push https://x-access-token:${TOKEN}@github.com/sessac-codingstudy/sunwoo-data-lab.git main
+          echo "===== FETCHED COMMITS ====="
+          git log HEAD..upstream/main --oneline || echo "No new commits from upstream."
 
